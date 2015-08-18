@@ -10,10 +10,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 
 import javax.print.DocFlavor;
@@ -37,13 +39,23 @@ public class TelaJogo extends TelaBase {
         private Texture TextureJogadorl;
         private boolean indor;
         private boolean indol;
+        private boolean atirando;
+        private Array<Image> tiros = new Array<Image>();
+        private Texture textureTiro;
+
+        private Texture textureMeteoro1;
+        private Texture textureMeteoro2;
+        private Array<Image> meteoros1 = new Array<Image>();
+        private Array<Image> meteoros2 = new Array<Image>();
+
+
     /**
      * contrutor padrão da tela de jogos
      * @aram game Referencia para a classe principal
      */
 
     public TelaJogo(mainSpaceInvaders game){
-        super (game);
+        super(game);
 
     }
 
@@ -60,14 +72,23 @@ public class TelaJogo extends TelaBase {
         initFont();
         initInformacoes();
         initJogador();
+        initTExturas();
 
 
     }
 
+    private void initTExturas() {
+        textureTiro = new Texture("sprites/shot.png");
+
+        textureMeteoro1 = new Texture("sprites/enemie-1.png");
+        textureMeteoro2 = new Texture("sprites/enemie-2.png");
+
+    }
 
 
-
-
+    /**
+     * instacia os objetos do jogador e adiciona o palco
+     */
     private void initJogador(){
         TextureJogadorp = new Texture ("sprites/player.png");
         TextureJogadorr = new Texture ("sprites/player-right.png");
@@ -80,7 +101,9 @@ public class TelaJogo extends TelaBase {
 
     }
 
-
+    /**
+     * intacia as informações dos labels,  ou gameover
+     */
     private void initInformacoes() {
         Label.LabelStyle lbEstilo = new Label.LabelStyle();
         lbEstilo.font = fonte;
@@ -91,6 +114,10 @@ public class TelaJogo extends TelaBase {
 
     }
 
+
+    /**
+     * medoto intancia os objetos de fonte
+     */
     private void initFont() {
         fonte = new BitmapFont();
     }
@@ -109,9 +136,79 @@ public class TelaJogo extends TelaBase {
 
         capturaTeclas();
         atualizaJogador(delta);
+        atualizartiros(delta);
+        //autalizar meteoros
+        atualizarMeteoros(delta);
 
+
+        // atualia e desenha o palco na tela
         palco.act(delta);
         palco.draw();
+    }
+
+    private void atualizarMeteoros(float delta) {
+        int tipo = MathUtils.random(1,3);  //tipo de meteoro que vai cair
+        if (tipo == 1){
+            //creia meteoro 1
+            Image meteoro = new Image(textureMeteoro1);
+            float x = MathUtils.random(0,camera.viewportWidth - meteoro.getWidth());
+            float y = MathUtils.random(camera.viewportHeight, camera.viewportHeight *2);
+            meteoro.setPosition(x,y);
+            meteoros1.add(meteoro);
+            palco.addActor(meteoro);
+        }else{
+            //crea meteoro 2;
+        }
+        float velocidade = 200;
+        for(Image meteoro : meteoros1){
+            float x = meteoro.getX();
+            float y = meteoro.getY() - velocidade * delta;
+            meteoro.setPosition(x,y);
+        }
+    }
+
+    //tempo do tiro em segundeos
+    private float intevaloTiro = 0;
+   // minimo de tempo para novo tiro
+    private final float min_intervalo_tiros = 0.4f;
+
+
+    private void atualizartiros(float delta) {
+        float velocidade = 300;  //velocidado de movimentacao do tiro
+        intevaloTiro = intevaloTiro + delta; //aculula o tempo do tiro
+        if (atirando){
+            //verefica se to tempo do tiro esta permetido
+           if (intevaloTiro >= min_intervalo_tiros) {
+
+                Image tiro = new Image(textureTiro);
+                float x = jogador.getX() + jogador.getWidth() / 2 - tiro.getWidth() / 2;
+                float y = jogador.getY() + jogador.getHeight();
+
+
+                tiro.setPosition(x, y);
+                tiros.add(tiro);
+                palco.addActor(tiro);
+                intevaloTiro = 0;
+            }
+        }
+        //percorre todos os tiros existentes
+        for (Image tiro : tiros){
+            float x = tiro.getX();
+            float y = tiro.getY() + velocidade * delta;
+            tiro.setPosition(x,y);
+            // remove os tiros da tela
+            if (tiro.getY() > camera.viewportHeight){
+                tiros.removeValue(tiro,true); //remove da lista
+                tiro.remove(); //remove do palco;
+
+            }
+
+        }
+
+
+
+
+
     }
 
     /**
@@ -121,6 +218,7 @@ public class TelaJogo extends TelaBase {
     private void atualizaJogador(float delta) {
         float velocidade = 200;
         if (indor){
+            //verefica se o jogador esta dentro da tela
             if (jogador.getX() < camera.viewportWidth - jogador.getWidth()) {
                 float X = jogador.getX() + velocidade * delta;
                 float y = jogador.getY();
@@ -129,6 +227,7 @@ public class TelaJogo extends TelaBase {
             }
         }
         if (indol){
+            //verefica se o jogador esta dentro da tela
             if (jogador.getX() > 0) {
                 float X = jogador.getX() - velocidade * delta;
                 float y = jogador.getY();
@@ -154,13 +253,18 @@ public class TelaJogo extends TelaBase {
     private void capturaTeclas() {
         indol = false;
         indor = false;
+        atirando = false;
 
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
         indol = true;
-      }
+        }
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
             indor = true;
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            atirando = true;
+        }
+
     }
 
     /**
@@ -212,5 +316,8 @@ public class TelaJogo extends TelaBase {
         TextureJogadorl.dispose();
         TextureJogadorp.dispose();
         TextureJogadorr.dispose();
+        textureTiro.dispose();
+        textureMeteoro1.dispose();
+        textureMeteoro2.dispose();;
     }
 }
