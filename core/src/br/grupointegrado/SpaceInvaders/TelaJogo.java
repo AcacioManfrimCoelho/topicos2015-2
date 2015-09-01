@@ -143,15 +143,16 @@ public class TelaJogo extends TelaBase {
      */
     private void initFont() {// { fonte = new BitmapFont();
 
-        freeTypeFontGenerator generator = new FreeTypeFontGenerator(gdx.files.internal("fonts/roboto.ttf"));
-        FreeTypeFontGenerator.freeTupeParameter param = new freeTypefontGenerator.freeTypeFontParameter();
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
         param.color = Color.WHITE;
-        param.size = 24
-        param.ShadowoFfsetX = 1;
-        param.ShadowoFfsety = 1;
-        param.shadowColor = color.BLuE;
+        param.size = 24;
+        param.shadowOffsetY = 1;
+        param.shadowOffsetX = 1;
+        param.shadowColor = Color.BLUE;
 
-        tem coisa aqui
+        fonte = generator.generateFont(param);
+        generator.dispose();
     }
     /**
      * chamado todo quadro de atualizacao ou fps
