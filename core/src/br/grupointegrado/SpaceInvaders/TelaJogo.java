@@ -2,6 +2,8 @@ package br.grupointegrado.SpaceInvaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -47,6 +49,10 @@ public class TelaJogo extends TelaBase {
         private Array<Image> tiros = new Array<Image>();
         private Texture textureTiro;
 
+        private Sound somTiro;
+        private Sound somExplosao;
+        private Sound somGameOver;
+        private Music musicaFundo;
 
         private Array<Texture> texturasExplosao = new Array<Texture>();
         private Array<Explosao> explosoes = new Array<Explosao>();
@@ -80,19 +86,28 @@ public class TelaJogo extends TelaBase {
         initFont();
         initInformacoes();
         initJogador();
-        initTExturas();
+        initTexturas();
+        initSons();
 
 
     }
 
-    private void initTExturas() {
+    private void initSons(){
+        somTiro     = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.mp3"));
+        somExplosao = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.mp3"));
+        somGameOver = Gdx.audio.newSound(Gdx.files.internal("sounds/gameover.mp3"));
+        musicaFundo = Gdx.audio.newMusic(Gdx.files.internal("sounds/backgraund.mp3"));
+        musicaFundo.setLooping(true);
+    }
+
+    private void initTexturas() {
         textureTiro = new Texture("sprites/shot.png");
 
         textureMeteoro1 = new Texture("sprites/enemie-1.png");
         textureMeteoro2 = new Texture("sprites/enemie-2.png");
 
-        for (int i = 0; i <= 17; i++){
-            Texture text = new Texture("sprintes/explosion-" + i + ".png");
+        for (int i = 1; i <= 17; i++){
+            Texture text = new Texture("sprites/explosion-" + i + ".png");
             texturasExplosao.add(text);
         }
 
@@ -175,13 +190,20 @@ public class TelaJogo extends TelaBase {
 
 
         if (gameOver == false) {
-            capturaTeclas();
-            atualizaJogador(delta);
-            atualizartiros(delta);
-            //autalizar meteoros
-            atualizarMeteoros(delta);
-            detectarColizoes(meteoros1, pontuacao += 5);
-            detectarColizoes(meteoros2, pontuacao += 15);
+            if (!musicaFundo.isPlaying()) {
+                musicaFundo.play();
+            }
+                capturaTeclas();
+                atualizaJogador(delta);
+                atualizartiros(delta);
+                //autalizar meteoros
+                atualizarMeteoros(delta);
+                detectarColizoes(meteoros1, pontuacao += 5);
+                detectarColizoes(meteoros2, pontuacao += 15);
+            }else{
+                if (musicaFundo.isPlaying()){
+                    musicaFundo.stop();
+                }
         }
 
 
@@ -225,10 +247,7 @@ public class TelaJogo extends TelaBase {
                     tiros.removeValue(tiro, true);
                     meteoro.remove();
                     meteoros.removeValue(meteoro, true);
-                    criarExplosao(meteoro.getX(), meteoro.getY());
-
-
-
+                    criarExplosao(meteoro.getX()+ meteoro.getWidth()/2, meteoro.getY()+ meteoro.getHeight()/2);
                 }
 
             }
@@ -249,18 +268,28 @@ public class TelaJogo extends TelaBase {
             if (recJogador.overlaps(recMeteoro)) {
                 //ocorre colisao entre
                 gameOver = true;
+                somGameOver.play();
             }
         }
     }
 
+    /**
+     * crea a explosao na posicao
+     * @param x
+     * @param y
+     */
+
+
+
     private void criarExplosao(float x, float y) {
 
         Image ator = new Image(texturasExplosao.get(0));
-        ator.setPosition(x, y);
+        ator.setPosition(x - ator.getWidth()/2, y - ator.getHeight()/2);
         palco.addActor(ator);
 
         Explosao explosao = new Explosao(ator, texturasExplosao);
         explosoes.add(explosao);
+        somExplosao.play();
     }
 
     private void atualizarMeteoros(float delta) {
@@ -334,6 +363,7 @@ public class TelaJogo extends TelaBase {
                 tiros.add(tiro);
                 palco.addActor(tiro);
                 intevaloTiro = 0;
+                somTiro.play();
             }
         }
         //percorre todos os tiros existentes
@@ -465,6 +495,10 @@ public class TelaJogo extends TelaBase {
         textureTiro.dispose();
         textureMeteoro1.dispose();
         textureMeteoro2.dispose();
+        somTiro.dispose();
+        somExplosao.dispose();
+        somGameOver.dispose();
+        musicaFundo.dispose();
 
         for(Texture text : texturasExplosao){
             text.dispose();
