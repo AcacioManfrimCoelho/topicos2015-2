@@ -11,6 +11,6 @@ public class mainSpaceInvaders extends Game{
 
 	@Override
 	public void create() {
-	setScreen(new TelaMenu(this));
+	setScreen(new TelaJogo(this));
 	}
 }

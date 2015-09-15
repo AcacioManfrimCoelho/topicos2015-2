@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -96,7 +95,7 @@ public class TelaJogo extends TelaBase {
         somTiro     = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.mp3"));
         somExplosao = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.mp3"));
         somGameOver = Gdx.audio.newSound(Gdx.files.internal("sounds/gameover.mp3"));
-        musicaFundo = Gdx.audio.newMusic(Gdx.files.internal("sounds/backgraund.mp3"));
+        musicaFundo = Gdx.audio.newMusic(Gdx.files.internal("sounds/background.mp3"));
         musicaFundo.setLooping(true);
     }
 
