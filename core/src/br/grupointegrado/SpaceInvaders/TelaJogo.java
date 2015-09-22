@@ -1,7 +1,9 @@
 package br.grupointegrado.SpaceInvaders;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -14,8 +16,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -82,14 +87,16 @@ public class TelaJogo extends TelaBase {
         palco  = new Stage(new FillViewport(camera.viewportWidth, camera.viewportHeight, camera));
         palcoinformacoes  = new Stage(new FillViewport(camera.viewportWidth, camera.viewportHeight, camera));
 
+
+
         initFont();
         initInformacoes();
         initJogador();
         initTexturas();
         initSons();
 
-
     }
+
 
     private void initSons(){
         somTiro     = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.mp3"));
@@ -165,7 +172,7 @@ public class TelaJogo extends TelaBase {
         param.shadowOffsetX = 1;
         param.shadowColor = Color.BLUE;
 
-        fonte = generator.generateFont(param);
+
         generator.dispose();
     }
     /**
@@ -173,6 +180,10 @@ public class TelaJogo extends TelaBase {
      * @param delta   tempo entre um quadro e outro em segundo
      */
     @Override
+
+
+
+
     public void render(float delta) {
         Gdx.gl.glClearColor(.15f, .15f, .25f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -221,9 +232,26 @@ public class TelaJogo extends TelaBase {
                 explosoes.removeValue(explosao, true); // remove a explosap
                 explosao.getAtor().remove(); //remove ator do paulo
             } else
+
                 explosao.atualizar(delta);
         }
     }
+
+    private void reiniciarJogo(){
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER));
+        Preferences preferencias = Gdx.app.getPreferences("SpaceInvaders");
+        int pontuacaoMaxima =  preferencias.getInteger("pontuacao_maxima",0);
+        if(pontuacao > pontuacaoMaxima){
+            preferencias.putInteger("pontuacao_maxima",pontuacao);
+            preferencias.flush();
+        }
+        game.setScreen(new TelaMenu(game));
+    }
+
+
+
+
+
     //declaracao do objetos
     private Rectangle recJogador = new Rectangle();
     private Rectangle recTiro = new Rectangle();
@@ -326,6 +354,8 @@ public class TelaJogo extends TelaBase {
             if (meteoro.getY() + meteoro.getHeight() < 0) {
                 meteoro.remove(); //remove do palco;
                 meteoros1.removeValue(meteoro, true); //remove da lista
+                pontuacao = pontuacao - 30;
+
             }
         }
         float velocidade2 = 250;
@@ -336,6 +366,7 @@ public class TelaJogo extends TelaBase {
                 if (meteoro.getY() + meteoro.getHeight() < 0) {
                     meteoro.remove(); //remove do palco;
                     meteoros2.removeValue(meteoro, true); //remove da lista
+                    pontuacao = pontuacao - 60;
                 }
             }
         }
@@ -429,15 +460,48 @@ public class TelaJogo extends TelaBase {
         indor = false;
         atirando = false;
 
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)|| clicouEsquerda()){
         indol = true;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) || clicouDireita()){
             indor = true;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) || (Gdx.app.getType()== Application.ApplicationType.Android)){
             atirando = true;
         }
+
+    }
+
+    private boolean clicouEsquerda() {
+        if (Gdx.input.isTouched()) {
+            Vector3 posicao = new Vector3();
+            posicao.x = Gdx.input.getX();
+            posicao.y = Gdx.input.getY();
+
+            posicao = camera.viewportWidth / 2;
+
+            if (posicao.x > meio) {
+                return true;
+
+            }
+        }
+        return false;
+    }
+
+    private boolean clicouDireita() {
+        if (Gdx.input.isTouched()) {
+            Vector3 posicao = new Vector3();
+            posicao.x = Gdx.input.getX();
+            posicao.y = Gdx.input.getY();
+
+            posicao meio = camera.viewportWidth / 2;
+
+            if (posicao.x < meio) {
+                return true;
+
+            }
+        }
+        return false;
 
     }
 
