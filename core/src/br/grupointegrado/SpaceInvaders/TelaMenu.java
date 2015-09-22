@@ -148,7 +148,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 
         lbTitulo.setPosition(x, y);
 
-        x = camera.viewportWidth /2 - lbpontuacao.getPrefWidth()/2
+        x = camera.viewportWidth /2 - lbpontuacao.getPrefWidth()/2;
         y = 100;
 
         lbpontuacao.setPosition(x, y);

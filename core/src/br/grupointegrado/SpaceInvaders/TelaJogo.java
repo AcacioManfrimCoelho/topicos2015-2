@@ -152,7 +152,7 @@ public class TelaJogo extends TelaBase {
         palcoinformacoes.addActor(lbPontuacao);
 
         lbGameOver = new Label("game Over", lbEstilo);
-        lbGameOver.setVisible(false);
+//        lbGameOver.setVisible(false);
         palcoinformacoes.addActor(lbGameOver);
 
 
@@ -477,8 +477,10 @@ public class TelaJogo extends TelaBase {
             Vector3 posicao = new Vector3();
             posicao.x = Gdx.input.getX();
             posicao.y = Gdx.input.getY();
+            posicao.z = 0;
 
-            posicao = camera.viewportWidth / 2;
+            posicao = camera.unproject(posicao);
+            float meio = camera.viewportWidth / 2;
 
             if (posicao.x > meio) {
                 return true;
@@ -494,7 +496,8 @@ public class TelaJogo extends TelaBase {
             posicao.x = Gdx.input.getX();
             posicao.y = Gdx.input.getY();
 
-            posicao meio = camera.viewportWidth / 2;
+            posicao = camera.unproject(posicao);
+            float meio = camera.viewportWidth / 2;
 
             if (posicao.x < meio) {
                 return true;
