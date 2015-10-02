@@ -53,7 +53,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 
     private void intBotoes() {
         texturaBotao = new Texture("buttons/button.png");
-        texturabotaoPressionado = new Texture("buttons/button-down-png");
+        texturabotaoPressionado = new Texture("buttons/button-down.png");
 
 
         ImageTextButton.ImageTextButtonStyle estilo = new ImageTextButton.ImageTextButtonStyle();

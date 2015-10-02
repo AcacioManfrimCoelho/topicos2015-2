@@ -32,7 +32,7 @@ import sun.print.SunPrinterJobService;
 
 
 /**
- * Created by AC¡CIO on 03/08/2015.
+ * Created by AC√ÅCIO on 03/08/2015.
  */
 public class TelaJogo extends TelaBase {
 
@@ -68,7 +68,7 @@ public class TelaJogo extends TelaBase {
 
 
     /**
-     * contrutor padr„o da tela de jogos
+     * contrutor padr√£o da tela de jogos
      * @aram game Referencia para a classe principal
      */
 
@@ -78,7 +78,7 @@ public class TelaJogo extends TelaBase {
     }
 
     /**
-     * chamado quando a tela È exibida
+     * chamado quando a tela √© exibida
      */
     @Override
     public void show() {
@@ -140,7 +140,7 @@ public class TelaJogo extends TelaBase {
     }
 
     /**
-     * intacia as informaÁıes dos labels,  ou gameover
+     * intacia as informa√ß√µes dos labels,  ou gameover
      */
     private void initInformacoes() {
         Label.LabelStyle lbEstilo = new Label.LabelStyle();
@@ -172,6 +172,7 @@ public class TelaJogo extends TelaBase {
         param.shadowOffsetX = 1;
         param.shadowColor = Color.BLUE;
 
+        fonte = generator.generateFont(param);
 
         generator.dispose();
     }
@@ -268,7 +269,7 @@ public class TelaJogo extends TelaBase {
             for (Image tiro : tiros){
                 recTiro.set(tiro.getX(), tiro.getY(), tiro.getImageWidth(),tiro.getImageHeight());
                 if (recMeteoro.overlaps(recTiro)){
-                    //ocorre uma colis„o do tiro com o meteoro1
+                    //ocorre uma colis√£o do tiro com o meteoro1
                     pontuacao += 5;
                     tiro.remove();
                     tiros.removeValue(tiro, true);
@@ -282,7 +283,7 @@ public class TelaJogo extends TelaBase {
             for (Image tiro : tiros){
                 recTiro.set(tiro.getX(), tiro.getY(), tiro.getImageWidth(),tiro.getImageHeight());
                 if (recMeteoro.overlaps(recTiro)){
-                    //ocorre uma colis„o do tiro com o meteoro1
+                    //ocorre uma colis√£o do tiro com o meteoro1
                     pontuacao += 5;
                     tiro.remove();
                     tiros.removeValue(tiro, true);
@@ -324,8 +325,8 @@ public class TelaJogo extends TelaBase {
         int gtdmeteoros = meteoros1.size + meteoros2.size;  //retorna a quantidade de meteoros
 
         if (gtdmeteoros < 15) {
-           // int tipo = MathUtils.random(1, 3);  //tipo de meteoro que vai cair sempre no caso o 3 n„o aparece se fosse 1 a 5 5 tambem n„o
-            int tipo = MathUtils.random(1, 5);  //tipo de meteoro que vai cair sempre no caso o 3 n„o aparece se fosse 1 a 5 5 tambem n„o
+           // int tipo = MathUtils.random(1, 3);  //tipo de meteoro que vai cair sempre no caso o 3 n√£o aparece se fosse 1 a 5 5 tambem n√£o
+            int tipo = MathUtils.random(1, 5);  //tipo de meteoro que vai cair sempre no caso o 3 n√£o aparece se fosse 1 a 5 5 tambem n√£o
             if (tipo == 1) {
                 //creia meteoro 1
                 Image meteoro = new Image(textureMeteoro1);
@@ -509,7 +510,7 @@ public class TelaJogo extends TelaBase {
     }
 
     /**
-     * … chanmado sempre que È alterado o tamanho da tela s
+     * √â chanmado sempre que √© alterado o tamanho da tela s
      * @param width novo valor de largura da tela
      * @param height novo valor da altura da tela
      */
@@ -528,7 +529,7 @@ public class TelaJogo extends TelaBase {
 
 
     /**
-     * sempre È chamado quando for minimizado
+     * sempre √© chamado quando for minimizado
      */
 
     @Override
@@ -538,7 +539,7 @@ public class TelaJogo extends TelaBase {
 
 
     /**
-     * È chamado sempre que o jogo È chamado para o primeiro plano
+     * √© chamado sempre que o jogo √© chamado para o primeiro plano
      */
     @Override
     public void resume() {
@@ -546,7 +547,7 @@ public class TelaJogo extends TelaBase {
     }
 
     /**
-     * È chamado quando a tela for destruida
+     * √© chamado quando a tela for destruida
      */
     @Override
     public void dispose() {
